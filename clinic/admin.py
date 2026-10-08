@@ -4,7 +4,6 @@
 """
 
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from .models import (
     UserProfile, Specialization, Doctor,
     Schedule, Appointment, MedicalRecord, DoctorReview
@@ -33,27 +32,39 @@ class MedicalRecordInline(admin.StackedInline):
 # Регистрация модели UserProfile
 # =====================
 @admin.register(UserProfile)
-class UserProfileAdmin(UserAdmin):
+class UserProfileAdmin(admin.ModelAdmin):
     """Админ-панель для пациентов."""
 
     # Дополнительные поля в списке
     list_display = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'blood_group', 'is_staff')
-    list_filter = ('is_staff', 'is_active', 'blood_group')
+    list_filter = ('is_staff', 'is_active', 'blood_group', 'date_register')
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone_number')
-
-    # Добавляем наши поля в форму редактирования
-    fieldsets = UserAdmin.fieldsets + (
-        ('Профиль пациента', {
+    ordering = ('-date_register',)
+    
+    # Поля для отображения
+    fieldsets = (
+        ('Учётная запись', {
+            'fields': ('username', 'password')
+        }),
+        ('Личная информация', {
+            'fields': ('first_name', 'last_name', 'email', 'photo')
+        }),
+        ('Медицинские данные', {
             'fields': ('birth_date', 'phone_number', 'address', 'blood_group')
         }),
-    )
-
-    # Поля при создании нового пользователя
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Профиль пациента', {
-            'fields': ('first_name', 'last_name', 'email', 'birth_date', 'phone_number', 'address', 'blood_group')
+        ('Права доступа', {
+            'fields': ('is_active', 'is_staff', 'is_superuser'),
+            'classes': ('collapse',)
         }),
     )
+    
+    # Только чтение для некоторых полей
+    readonly_fields = ('date_register', 'last_login', 'date_joined')
+    
+    def save_model(self, request, obj, form, change):
+        if not change:  # Если создаём нового пользователя
+            obj.set_password(form.cleaned_data['password'])
+        super().save_model(request, obj, form, change)
 
 
 # =====================
@@ -74,21 +85,12 @@ class SpecializationAdmin(admin.ModelAdmin):
 class DoctorAdmin(admin.ModelAdmin):
     """Админ-панель для врачей."""
 
-    list_display = ('last_name', 'first_name', 'patronymic', 'specialization', 'experience_years', 'price', 'get_avg_rating', 'get_appointment_count')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialization', 'experience_years', 'price')
     list_filter = ('specialization', 'experience_years')
     search_fields = ('first_name', 'last_name', 'patronymic')
-
-    # Добавляем расписание прямо на странице врача
-    inlines = [ScheduleInline]
-
-    # Методы как колонки
-    @admin.display(description='Средний рейтинг')
-    def get_avg_rating(self, obj):
-        return obj.get_avg_rating()
-
-    @admin.display(description='Кол-во записей')
-    def get_appointment_count(self, obj):
-        return obj.get_appointment_count()
+    
+    # Простые поля без fieldsets для совместимости с Python 3.14.5
+    fields = ('first_name', 'last_name', 'patronymic', 'specialization', 'experience_years', 'price', 'photo')
 
 
 # =====================

@@ -1,0 +1,36 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Специализации - Hospital{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4"><i class="fas fa-stethoscope"></i> Специализации</h1>
+    
+    <div class="row">
+        {% for spec in specializations %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                {% if spec.image %}
+                <img src="{{ spec.image.url }}" class="card-img-top" alt="{{ spec.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-primary d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-stethoscope fa-4x text-white"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ spec.name }}</h5>
+                    <p class="card-text">{{ spec.description }}</p>
+                    <a href="{% url 'clinic:doctors_list' %}?specialization={{ spec.id }}" class="btn btn-primary w-100">
+                        Врачи этой специализации
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">Специализации пока не добавлены</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

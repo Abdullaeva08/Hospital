@@ -1,0 +1,72 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Управление фото - Медицинская клиника{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">📸 Управление фотографиями</h2>
+
+    <!-- Врачи -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>👨‍⚕️ Врачи</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for doctor in doctors %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        {% if doctor.photo %}
+                        <img src="{{ doctor.photo.url }}" class="card-img-top" alt="{{ doctor }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-user-md fa-5x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ doctor }}</h5>
+                            <p class="card-text">{{ doctor.specialization }}</p>
+                            <a href="{% url 'clinic:upload_doctor_photo' doctor.id %}" class="btn btn-primary btn-sm">
+                                {% if doctor.photo %}Изменить фото{% else %}Загрузить фото{% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Специализации -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h4>🏥 Специализации</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for spec in specializations %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        {% if spec.image %}
+                        <img src="{{ spec.image.url }}" class="card-img-top" alt="{{ spec }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-hospital fa-5x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ spec.name }}</h5>
+                            <a href="{% url 'clinic:upload_specialization_photo' spec.id %}" class="btn btn-success btn-sm">
+                                {% if spec.image %}Изменить фото{% else %}Загрузить фото{% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'clinic:index' %}" class="btn btn-secondary">← Назад на главную</a>
+</div>
+{% endblock %}

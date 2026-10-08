@@ -1,0 +1,325 @@
+{% extends 'clinic/base.html' %} {% load static %} {% block title %}Регистрация
+- Hospital{% endblock %} {% block content %}
+<div class="registration-page">
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="registration-card">
+          <!-- Левая часть с информацией -->
+          <div class="row g-0">
+            <div class="col-md-5 registration-info">
+              <div class="info-content">
+                <div class="icon-wrapper mb-4">
+                  <i class="fas fa-hospital fa-4x text-white"></i>
+                </div>
+                <h2 class="text-white mb-4">Добро пожаловать в Hospital</h2>
+                <p class="text-white mb-4">
+                  Присоединяйтесь к тысячам пациентов, которые доверяют нам своё
+                  здоровье
+                </p>
+
+                <div class="feature-list">
+                  <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Онлайн запись к врачу</span>
+                  </div>
+                  <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Доступ к медицинским записям</span>
+                  </div>
+                  <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Напоминания о приёмах</span>
+                  </div>
+                  <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Личный кабинет пациента</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Правая часть с формой -->
+            <div class="col-md-7 registration-form-wrapper">
+              <div class="form-content">
+                <div class="text-center mb-4">
+                  <h3 class="text-primary">
+                    <i class="fas fa-user-plus"></i> Регистрация пациента
+                  </h3>
+                  <p class="text-muted">
+                    Заполните данные для создания аккаунта
+                  </p>
+                </div>
+
+                <form method="post" id="registrationForm">
+                  {% csrf_token %}
+
+                  <!-- Шаг 1: Аккаунт -->
+                  <div class="form-step active" id="step1">
+                    <h5 class="mb-3 text-primary">
+                      <i class="fas fa-user"></i> Данные аккаунта
+                    </h5>
+                    <div class="form-floating mb-3">
+                      {{ form.username }}
+                      <label>Имя пользователя</label>
+                      {% if form.username.errors %}
+                      <div class="invalid-feedback d-block">
+                        {{ form.username.errors }}
+                      </div>
+                      {% endif %}
+                    </div>
+                    <div class="form-floating mb-3">
+                      {{ form.email }}
+                      <label>Email</label>
+                      {% if form.email.errors %}
+                      <div class="invalid-feedback d-block">
+                        {{ form.email.errors }}
+                      </div>
+                      {% endif %}
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                          {{ form.password1 }}
+                          <label>Пароль</label>
+                          {% if form.password1.errors %}
+                          <div class="invalid-feedback d-block">
+                            {{ form.password1.errors }}
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                          {{ form.password2 }}
+                          <label>Повторите пароль</label>
+                          {% if form.password2.errors %}
+                          <div class="invalid-feedback d-block">
+                            {{ form.password2.errors }}
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-lg w-100 next-step"
+                    >
+                      Далее <i class="fas fa-arrow-right"></i>
+                    </button>
+                  </div>
+
+                  <!-- Шаг 2: Личные данные -->
+                  <div class="form-step" id="step2" style="display: none">
+                    <h5 class="mb-3 text-primary">
+                      <i class="fas fa-id-card"></i> Личные данные
+                    </h5>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                          {{ form.last_name }}
+                          <label>Фамилия</label>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                          {{ form.first_name }}
+                          <label>Имя</label>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="mb-3">
+                          <label class="form-label">Дата рождения</label>
+                          {{ form.birth_date }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                          {{ form.phone_number }}
+                          <label>Телефон</label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="form-label">Группа крови</label>
+                          {{ form.blood_group }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Адрес</label>
+                      {{ form.address }}
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary flex-fill prev-step"
+                      >
+                        <i class="fas fa-arrow-left"></i> Назад
+                      </button>
+                      <button
+                        type="submit"
+                        class="btn btn-success btn-lg flex-fill"
+                      >
+                        <i class="fas fa-check"></i> Зарегистрироваться
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <div class="text-center mt-4">
+                  <p class="text-muted">
+                    Уже есть аккаунт?
+                    <a
+                      href="{% url 'clinic:login' %}"
+                      class="text-primary fw-bold"
+                      >Войти</a
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .registration-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .registration-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .registration-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 50px 40px;
+    display: flex;
+    align-items: center;
+  }
+
+  .info-content {
+    width: 100%;
+  }
+
+  .icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-list {
+    margin-top: 30px;
+  }
+
+  .feature-item {
+    color: white;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .feature-item i {
+    font-size: 1.2rem;
+  }
+
+  .registration-form-wrapper {
+    padding: 50px 40px;
+    background: #f8f9fa;
+  }
+
+  .form-content {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .form-floating > .form-control {
+    height: 58px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+  }
+
+  .form-floating > label {
+    padding: 1rem 1rem;
+  }
+
+  .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-weight: 600;
+    transition: transform 0.3s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .form-step {
+    animation: fadeIn 0.5s;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .registration-info {
+      display: none;
+    }
+
+    .registration-form-wrapper {
+      padding: 30px 20px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const nextBtn = document.querySelector(".next-step");
+    const prevBtn = document.querySelector(".prev-step");
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
+
+    nextBtn.addEventListener("click", function () {
+      step1.style.display = "none";
+      step2.style.display = "block";
+    });
+
+    prevBtn.addEventListener("click", function () {
+      step2.style.display = "none";
+      step1.style.display = "block";
+    });
+  });
+</script>
+{% endblock %}

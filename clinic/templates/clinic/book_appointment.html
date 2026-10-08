@@ -1,0 +1,45 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Запись на приём - Hospital{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-calendar-plus"></i> Запись на приём</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.doctor.label_tag }}
+                            {{ form.doctor }}
+                            {% if form.doctor.errors %}
+                            <div class="text-danger">{{ form.doctor.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.date_time.label_tag }}
+                            {{ form.date_time }}
+                            <small class="form-text text-muted">Проверьте расписание врача перед выбором времени</small>
+                            {% if form.date_time.errors %}
+                            <div class="text-danger">{{ form.date_time.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.complaint.label_tag }}
+                            {{ form.complaint }}
+                            {% if form.complaint.errors %}
+                            <div class="text-danger">{{ form.complaint.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Записаться</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

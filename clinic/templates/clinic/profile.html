@@ -1,0 +1,227 @@
+{% extends 'clinic/base.html' %} {% load static %} {% block title %}Профиль -
+Hospital{% endblock %} {% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-lg">
+        <div class="card-header bg-gradient-primary text-white">
+          <h3><i class="fas fa-user-circle"></i> Мой профиль</h3>
+        </div>
+        <div class="card-body p-4">
+          <div class="row">
+            <!-- Левая колонка - Фото профиля -->
+            <div class="col-md-4 text-center">
+              <div class="profile-photo-section">
+                {% if user.photo %}
+                <img
+                  src="{{ user.photo.url }}"
+                  class="profile-photo img-fluid rounded-circle shadow mb-3"
+                  alt="Фото профиля"
+                />
+                {% else %}
+                <div
+                  class="profile-photo-placeholder rounded-circle shadow mb-3 mx-auto"
+                >
+                  <i class="fas fa-user fa-5x text-white"></i>
+                </div>
+                {% endif %}
+
+                <h4 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h4>
+                <p class="text-muted">@{{ user.username }}</p>
+
+                <div class="profile-stats mt-4">
+                  <div class="stat-item">
+                    <i class="fas fa-calendar-check text-primary"></i>
+                    <p class="mb-0"><strong>Зарегистрирован:</strong></p>
+                    <small class="text-muted"
+                      >{{ user.date_register|date:"d.m.Y" }}</small
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Правая колонка - Форма редактирования -->
+            <div class="col-md-8">
+              <h5 class="text-primary mb-3">
+                <i class="fas fa-edit"></i> Редактировать профиль
+              </h5>
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Загрузка фото -->
+                <div class="mb-4">
+                  <label class="form-label fw-bold"
+                    ><i class="fas fa-camera"></i> Фото профиля</label
+                  >
+                  <div class="custom-file-upload">
+                    {{ form.photo }}
+                    <small class="form-text text-muted">
+                      Загрузите квадратное фото. Рекомендуемый размер:
+                      400x400px. Форматы: JPG, PNG.
+                    </small>
+                  </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <!-- Личные данные -->
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Имя</label>
+                    {{ form.first_name }}
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Фамилия</label>
+                    {{ form.last_name }}
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Email</label>
+                  {{ form.email }}
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Дата рождения</label>
+                    {{ form.birth_date }}
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Группа крови</label>
+                    {{ form.blood_group }}
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Телефон</label>
+                  {{ form.phone_number }}
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Адрес</label>
+                  {{ form.address }}
+                </div>
+
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Сохранить изменения
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Дополнительная информация -->
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <i class="fas fa-calendar-plus fa-3x text-primary mb-3"></i>
+              <h5>Мои записи</h5>
+              <p class="text-muted">Просмотрите историю приёмов</p>
+              <a
+                href="{% url 'clinic:my_appointments' %}"
+                class="btn btn-outline-primary"
+              >
+                Перейти
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <i class="fas fa-user-md fa-3x text-success mb-3"></i>
+              <h5>Найти врача</h5>
+              <p class="text-muted">Запишитесь на приём</p>
+              <a
+                href="{% url 'clinic:doctors_list' %}"
+                class="btn btn-outline-success"
+              >
+                Врачи
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <i class="fas fa-stethoscope fa-3x text-info mb-3"></i>
+              <h5>Специализации</h5>
+              <p class="text-muted">Все направления клиники</p>
+              <a
+                href="{% url 'clinic:specializations_list' %}"
+                class="btn btn-outline-info"
+              >
+                Посмотреть
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .profile-photo {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 5px solid #fff;
+  }
+
+  .profile-photo-placeholder {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid #fff;
+  }
+
+  .profile-stats {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .stat-item {
+    margin-bottom: 15px;
+  }
+
+  .stat-item i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+
+  .custom-file-upload input[type="file"] {
+    padding: 10px;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+    cursor: pointer;
+  }
+
+  .custom-file-upload input[type="file"]:hover {
+    border-color: #667eea;
+    background: #e7f1ff;
+  }
+
+  .card {
+    transition: transform 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+</style>
+{% endblock %}

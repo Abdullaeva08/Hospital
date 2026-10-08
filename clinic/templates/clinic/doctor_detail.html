@@ -1,0 +1,110 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}{{ doctor }} - Hospital{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Фото врача -->
+        <div class="col-md-4">
+            {% if doctor.photo %}
+            <img src="{{ doctor.photo.url }}" class="img-fluid rounded shadow" alt="{{ doctor }}">
+            {% else %}
+            <div class="bg-secondary d-flex align-items-center justify-content-center rounded shadow" style="height: 400px;">
+                <i class="fas fa-user-md fa-8x text-white"></i>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Информация о враче -->
+        <div class="col-md-8">
+            <h1>{{ doctor }}</h1>
+            <h4 class="text-primary">{{ doctor.specialization.name }}</h4>
+            <hr>
+            <p><strong><i class="fas fa-briefcase"></i> Опыт работы:</strong> {{ doctor.experience_years }} лет</p>
+            <p><strong><i class="fas fa-ruble-sign"></i> Цена приёма:</strong> {{ doctor.price }} ₽</p>
+            <p><strong><i class="fas fa-star"></i> Рейтинг:</strong> 
+                <span class="badge bg-warning text-dark">{{ avg_rating }}</span> ({{ reviews.count }} отзывов)
+            </p>
+            <p><strong><i class="fas fa-calendar-check"></i> Записей:</strong> {{ appointment_count }}</p>
+            
+            {% if user.is_authenticated %}
+            <a href="{% url 'clinic:book_appointment_doctor' doctor.id %}" class="btn btn-primary btn-lg mt-3">
+                <i class="fas fa-calendar-plus"></i> Записаться на приём
+            </a>
+            {% else %}
+            <a href="{% url 'clinic:login' %}" class="btn btn-primary btn-lg mt-3">
+                <i class="fas fa-sign-in-alt"></i> Войдите для записи
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Расписание -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h4><i class="fas fa-clock"></i> Расписание работы</h4>
+        </div>
+        <div class="card-body">
+            {% if schedules %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>День недели</th>
+                        <th>Время</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                    <tr>
+                        <td><strong>{{ schedule.get_day_of_week_display }}</strong></td>
+                        <td>{{ schedule.start_time }} - {{ schedule.end_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">Расписание не указано</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Отзывы -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h4><i class="fas fa-comments"></i> Отзывы пациентов</h4>
+        </div>
+        <div class="card-body">
+            {% if user.is_authenticated and not user_has_review %}
+            <form method="post" class="mb-4 p-3 bg-light rounded">
+                {% csrf_token %}
+                <h5>Оставить отзыв</h5>
+                {{ review_form.as_p }}
+                <button type="submit" class="btn btn-success">Отправить отзыв</button>
+            </form>
+            {% endif %}
+
+            {% for review in reviews %}
+            <div class="review-item border-bottom pb-3 mb-3">
+                <div class="d-flex justify-content-between">
+                    <h6><i class="fas fa-user"></i> {{ review.patient.first_name }} {{ review.patient.last_name }}</h6>
+                    <span class="text-warning">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.stars %}
+                            <i class="fas fa-star"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <p class="text-muted mb-1">{{ review.created_date|date:"d.m.Y" }}</p>
+                <p>{{ review.comment }}</p>
+            </div>
+            {% empty %}
+            <p class="text-muted">Отзывов пока нет</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'clinic/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero секция -->
+<div class="hero-section">
+    <div class="container text-center text-white">
+        <h1 class="display-3 fw-bold">Добро пожаловать в Hospital</h1>
+        <p class="lead">Качественная медицинская помощь для всей семьи</p>
+        <div class="mt-4">
+            <a href="{% url 'clinic:doctors_list' %}" class="btn btn-light btn-lg me-3">Наши врачи</a>
+            <a href="{% url 'clinic:register' %}" class="btn btn-outline-light btn-lg">Записаться на приём</a>
+        </div>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="container my-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                <h3>{{ doctors_count }}</h3>
+                <p>Опытных врачей</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <i class="fas fa-heartbeat fa-3x text-danger mb-3"></i>
+                <h3>15+</h3>
+                <p>Лет работы</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <i class="fas fa-smile fa-3x text-success mb-3"></i>
+                <h3>10000+</h3>
+                <p>Довольных пациентов</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Специализации -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Наши специализации</h2>
+    <div class="row">
+        {% for spec in specializations %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                {% if spec.image %}
+                <img src="{{ spec.image.url }}" class="card-img-top" alt="{{ spec.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-primary d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-stethoscope fa-4x text-white"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ spec.name }}</h5>
+                    <p class="card-text">{{ spec.description|truncatewords:15 }}</p>
+                    <a href="{% url 'clinic:doctors_list' %}?specialization={{ spec.id }}" class="btn btn-primary">Врачи</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'clinic:specializations_list' %}" class="btn btn-outline-primary">Все специализации</a>
+    </div>
+</div>
+{% endblock %}

@@ -51,6 +51,12 @@ class UserProfile(AbstractUser):
         auto_now_add=True,
         null=True
     )
+    photo = models.ImageField(
+        upload_to='patients/',
+        verbose_name='Фото профиля',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name = 'Пациент'

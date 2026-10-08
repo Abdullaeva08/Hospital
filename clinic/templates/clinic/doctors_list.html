@@ -1,0 +1,67 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Врачи - Hospital{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4"><i class="fas fa-user-md"></i> Наши врачи</h1>
+    
+    <!-- Фильтры -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="search" class="form-control" placeholder="Поиск по имени" value="{{ search_query }}">
+                </div>
+                <div class="col-md-5">
+                    <select name="specialization" class="form-control">
+                        <option value="">Все специализации</option>
+                        {% for spec in specializations %}
+                        <option value="{{ spec.id }}" {% if spec.id|stringformat:"s" == selected_specialization %}selected{% endif %}>{{ spec.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Список врачей -->
+    <div class="row">
+        {% for doctor in doctors %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" class="card-img-top" alt="{{ doctor }}" style="height: 250px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <i class="fas fa-user-md fa-5x text-white"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ doctor }}</h5>
+                    <p class="card-text"><strong>{{ doctor.specialization.name }}</strong></p>
+                    <p class="text-muted">Опыт: {{ doctor.experience_years }} лет</p>
+                    <p class="text-primary"><strong>Цена: {{ doctor.price }} ₽</strong></p>
+                    <div class="mb-2">
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-star"></i> {{ doctor.get_avg_rating }}
+                        </span>
+                        <span class="badge bg-info">{{ doctor.get_appointment_count }} записей</span>
+                    </div>
+                    <a href="{% url 'clinic:doctor_detail' doctor.id %}" class="btn btn-primary w-100">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> Врачи не найдены
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

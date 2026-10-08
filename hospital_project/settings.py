@@ -94,3 +94,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Тип первичного ключа по умолчанию
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Настройки аутентификации
+LOGIN_URL = 'clinic:login'
+LOGIN_REDIRECT_URL = 'clinic:index'
+LOGOUT_REDIRECT_URL = 'clinic:index'

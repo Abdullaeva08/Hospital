@@ -1,0 +1,53 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Мои записи - Hospital{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4"><i class="fas fa-calendar-check"></i> Мои записи на приём</h1>
+    
+    <div class="mb-3">
+        <a href="{% url 'clinic:book_appointment' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Новая запись
+        </a>
+    </div>
+
+    {% if appointments %}
+    <div class="row">
+        {% for apt in appointments %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header 
+                    {% if apt.status == 'pending' %}bg-warning
+                    {% elif apt.status == 'confirmed' %}bg-success text-white
+                    {% elif apt.status == 'cancelled' %}bg-danger text-white
+                    {% elif apt.status == 'completed' %}bg-info text-white
+                    {% endif %}">
+                    <strong>Статус: {{ apt.get_status_display }}</strong>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ apt.doctor }}</h5>
+                    <p><strong>Специализация:</strong> {{ apt.doctor.specialization.name }}</p>
+                    <p><strong>Дата и время:</strong> {{ apt.date_time|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Жалобы:</strong> {{ apt.complaint }}</p>
+                    
+                    {% if apt.status == 'completed' and apt.record %}
+                    <div class="alert alert-info mt-3">
+                        <h6><i class="fas fa-file-medical"></i> Медицинская запись</h6>
+                        <p><strong>Диагноз:</strong> {{ apt.record.diagnosis }}</p>
+                        <p><strong>Назначения:</strong> {{ apt.record.prescription }}</p>
+                        <small class="text-muted">Создано: {{ apt.record.created_date|date:"d.m.Y" }}</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle"></i> У вас пока нет записей на приём
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
